@@ -14,7 +14,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	err = ib.Start(errChan)
+	err = ib.Start(errChan, 30)
 	if err != nil {
 		log.Panic(err)
 	}
