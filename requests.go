@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 func post(payloadStruct interface{}, responseStruct interface{}, path string) error {
 	if isRunning {
 		var err error
+
 		payload, err := json.Marshal(&payloadStruct)
 		if err != nil {
 			return err
@@ -27,13 +27,15 @@ func post(payloadStruct interface{}, responseStruct interface{}, path string) er
 			return err
 		}
 
-		if string(bodyBytes) != "" && strings.Contains(string(bodyBytes), `"error":`) == false {
+		if string(bodyBytes) != "" {
 			err = json.Unmarshal(bodyBytes, &responseStruct)
 			if err != nil {
 				return err
 			}
+
 		}
 		return nil
+
 	}
 	return ErrNotRunning
 }
@@ -54,14 +56,15 @@ func get(responseStruct interface{}, path string) error {
 			return err
 		}
 
-		if string(bodyBytes) != "" && strings.Contains(string(bodyBytes), `"error":`) == false {
+		if string(bodyBytes) != "" {
 			err = json.Unmarshal(bodyBytes, &responseStruct)
 			if err != nil {
 				return err
 			}
-		}
 
+		}
 		return nil
+
 	}
 	return ErrNotRunning
 }

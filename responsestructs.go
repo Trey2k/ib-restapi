@@ -1,5 +1,7 @@
 package ibrestapi
 
+//Start Session Structs
+
 //TickleResponse is the response struct for /tickle
 type TickleResponse struct {
 	SsoExpires int
@@ -9,6 +11,11 @@ type TickleResponse struct {
 		Tickle     bool
 		AuthStatus AuthStatusResponse
 	}
+}
+
+//LogoutResponse is the return struct for /logout
+type LogoutResponse struct {
+	Confirmed bool
 }
 
 //AuthStatusResponse response struct for /iserver/auth/status
@@ -29,6 +36,34 @@ type ReauthinticateResponse struct {
 	Fail          string
 	Message       string
 	Prompts       []string
+}
+
+//End Session Structs
+//Start Contract Structs
+
+//GetContractInfoResponse response struct for /iserver/contract/{conid}/info
+type GetContractInfoResponse struct {
+	RTH            bool
+	ConID          int
+	CompanyName    string
+	Exchange       string
+	LocalSymbol    string
+	InstrumentType string
+	Currency       string
+	Category       string
+	Industry       string
+	Rules          struct {
+		OrderTypes        []string
+		OrderTypesOutside []string
+		DefaultSize       int
+		SizeIncrement     int
+		TifTypes          []string
+		LimitPrice        int
+		Stopprice         int
+		Preview           bool
+		DisplaySize       string
+		Increment         float64
+	}
 }
 
 //SearchResponses array of SearchResponse

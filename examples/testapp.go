@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -26,16 +27,22 @@ func main() {
 			log.Panic(err)
 		}
 	}(errChan)
-	printVerify("AMZ")
-	printVerify("GO")
-	printVerify("A")
-	printVerify("HH")
-	printVerify("IBM")
-	resp, err := ib.PingEndpoint()
+	/*	printVerify("AMZN")
+		printVerify("GO")
+		printVerify("A")
+		printVerify("HH")
+		printVerify("IBM")*/
+	found, conid, err := ib.GetContractID("GO")
 	if err != nil {
 		log.Panic(err)
 	}
-	println(resp)
+	if found {
+		response, err := ib.GetContractInfo(conid)
+		if err != nil {
+			log.Panic(err)
+		}
+		println(fmt.Sprint(response.Rules.OrderTypes))
+	}
 
 	<-make(chan struct{})
 }
