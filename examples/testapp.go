@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"strings"
 
@@ -32,7 +31,7 @@ func main() {
 		printVerify("A")
 		printVerify("HH")
 		printVerify("IBM")*/
-	found, conid, err := ib.GetContractID("GO")
+	found, conid, err := ib.GetContractID("AMZ")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -41,7 +40,7 @@ func main() {
 		if err != nil {
 			log.Panic(err)
 		}
-		println(fmt.Sprint(response.Rules.OrderTypes))
+		println(response.Industry)
 	}
 
 	<-make(chan struct{})

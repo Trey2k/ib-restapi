@@ -1,5 +1,12 @@
 package ibrestapi
 
+//Geneirc Structs
+
+//ErrorResponse response struct
+type ErrorResponse struct {
+	Error string
+}
+
 //Start Session Structs
 
 //TickleResponse is the response struct for /tickle

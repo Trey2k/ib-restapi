@@ -17,5 +17,5 @@ var ErrEndpointNotSet error = errors.New("Endpoint not set make sure to SetEndpo
 //ErrCantAuthenticate Lost connection to cpw
 var ErrCantAuthenticate error = errors.New("Unable to authenticate session. PLease try restarting your cpw")
 
-//ErrUnknowError Unkown error from cpw
-var ErrUnknowError error = errors.New("cpw sent an unkown error")
+//ErrUnkownResponseCode Unkown response code from server
+var ErrUnkownResponseCode error = errors.New("Unkown response code from server")
