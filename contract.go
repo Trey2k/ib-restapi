@@ -40,6 +40,6 @@ func GetContractInfo(conid int) (GetContractInfoResponse, error) {
 //Search by symbol or name
 func Search(payloadStruct SearchPayload) (SearchResponses, error) {
 	var response SearchResponses
-	err := post(payloadStruct, &response, "/iserver/secdef/search")
+	err := post(&payloadStruct, &response, "/iserver/secdef/search")
 	return response, err
 }
