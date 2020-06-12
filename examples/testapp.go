@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -30,12 +31,33 @@ func main() {
 			log.Panic(err)
 		}
 	}(errChan)
+	payload := ib.PlaceOrderPayload{
+		AcctID:          "U4154708",
+		Conid:           305691292,
+		SecType:         "305691292:STK",
+		COID:            "AMZ order",
+		ParentID:        "",
+		OrderType:       "MKT",
+		ListingExchange: "",
+		OutsideRTH:      false,
+		Price:           100,
+		Side:            "BUY",
+		Ticker:          "AMZN",
+		Tif:             "GTC",
+		Referrer:        "QuickTrade",
+		Quantity:        87,
+		UseAdaptive:     false,
+	}
 
-	printVerify("AMZN")
+	resp, err := ib.PreviewOrder(payload, "U4154708")
+
+	println(fmt.Sprint(resp))
+
+	/*printVerify("AMZN")
 	printVerify("GO")
 	printVerify("A")
 	printVerify("HH")
-	printVerify("IBM")
+	printVerify("IBM")*/
 
 	//Holding call to keep connection alive for testing purposes. You would not normally use this
 	<-make(chan struct{})
@@ -62,6 +84,7 @@ func verifyTicker(ticker string) (bool, ib.SearchResponse) {
 	for i := 0; i < len(responses); i++ {
 		if strings.ToUpper(responses[i].Symbol) == strings.ToUpper(ticker) {
 			response = responses[i]
+			println(response.Conid)
 			real = true
 		}
 	}
