@@ -1,12 +1,8 @@
 package ibrestapi
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net"
-	"net/http"
-	"strings"
 )
 
 var endpoint string
@@ -33,88 +29,22 @@ func isEndpointSet() bool {
 //Tickle tickles the endpoint to keep the session alive
 func Tickle() (TickleResponse, error) {
 	var response TickleResponse
-	if isRunning {
-		var err error
-		resp, err := http.Get(endpoint + "/tickle")
-
-		if err != nil {
-			return response, err
-		}
-
-		defer resp.Body.Close()
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return response, err
-		}
-
-		if string(bodyBytes) != "" && strings.Contains(string(bodyBytes), `"error":`) == false {
-			err = json.Unmarshal(bodyBytes, &response)
-			if err != nil {
-				return response, err
-			}
-		}
-
-		return response, nil
-	}
-	return response, ErrNotRunning
+	err := get(&response, "/tickle")
+	return response, err
 }
 
 //GetAuthStatus gets the current authentication status
 func GetAuthStatus() (AuthStatusResponse, error) {
 	var response AuthStatusResponse
-	if isRunning {
-		var err error
-		resp, err := http.Get(endpoint + "/iserver/auth/status")
-
-		if err != nil {
-			return response, err
-		}
-
-		defer resp.Body.Close()
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return response, err
-		}
-
-		if string(bodyBytes) != "" && strings.Contains(string(bodyBytes), `"error":`) == false {
-			err = json.Unmarshal(bodyBytes, &response)
-			if err != nil {
-				return response, err
-			}
-		}
-
-		return response, nil
-	}
-	return response, ErrNotRunning
+	err := get(&response, "/iserver/auth/status")
+	return response, err
 }
 
 //Reauthenticate Attempts to reauthenticate the session
 func Reauthenticate() (ReauthinticateResponse, error) {
 	var response ReauthinticateResponse
-	if isRunning {
-		var err error
-		resp, err := http.Get(endpoint + "/iserver/reauthenticate")
-
-		if err != nil {
-			return response, err
-		}
-
-		defer resp.Body.Close()
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return response, err
-		}
-
-		if string(bodyBytes) != "" && strings.Contains(string(bodyBytes), `"error":`) == false {
-			err = json.Unmarshal(bodyBytes, &response)
-			if err != nil {
-				return response, err
-			}
-		}
-
-		return response, nil
-	}
-	return response, ErrNotRunning
+	err := get(&response, "/iserver/reauthenticate")
+	return response, err
 }
 
 //PingEndpoint pings the endpoint

@@ -30,9 +30,12 @@ func main() {
 	printVerify("GO")
 	printVerify("A")
 	printVerify("HH")
-	printVerify("JJR")
-	printVerify("X43")
 	printVerify("IBM")
+	resp, err := ib.PingEndpoint()
+	if err != nil {
+		log.Panic(err)
+	}
+	println(resp)
 
 	<-make(chan struct{})
 }
