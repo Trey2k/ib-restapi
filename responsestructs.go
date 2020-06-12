@@ -30,3 +30,20 @@ type ReauthinticateResponse struct {
 	Message       string
 	Prompts       []string
 }
+
+//SearchResponses array of SearchResponse
+type SearchResponses []SearchResponse
+
+//SearchResponse response struct for /iserver/secdef/search
+type SearchResponse struct {
+	Conid         int
+	CompanyHeader string
+	CompanyName   string
+	Symbol        string
+	Description   string
+	Opt           string
+	War           string
+	Error         string
+	Sections      []struct {
+	}
+}

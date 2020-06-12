@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	ib "github.com/Trey2k/ib-restapi"
 )
@@ -25,12 +26,45 @@ func main() {
 			log.Panic(err)
 		}
 	}(errChan)
+	printVerify("AMZ")
+	printVerify("GO")
+	printVerify("A")
+	printVerify("HH")
+	printVerify("JJR")
+	printVerify("X43")
+	printVerify("IBM")
 
-	response, err := ib.GetAuthStatus()
+	<-make(chan struct{})
+}
+
+func verifyTicker(ticker string) (bool, ib.SearchResponse) {
+	payload := ib.SearchPayload{
+		Symbol:  ticker,
+		Name:    false,
+		SecType: "",
+	}
+	real := false
+
+	responses, err := ib.Search(payload)
 	if err != nil {
 		log.Panic(err)
 	}
-	println(response.Authenticated)
 
-	<-make(chan struct{})
+	var response ib.SearchResponse
+	for i := 0; i < len(responses); i++ {
+		if strings.ToUpper(responses[i].Symbol) == strings.ToUpper(ticker) {
+			response = responses[i]
+			real = true
+		}
+	}
+	return real, response
+}
+
+func printVerify(ticker string) {
+	real, response := verifyTicker(ticker)
+	if real {
+		println("[" + ticker + "] is a real ticker it belongs to " + response.CompanyHeader)
+	} else {
+		println("[" + ticker + "] is not a real ticker")
+	}
 }

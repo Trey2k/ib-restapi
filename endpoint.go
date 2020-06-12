@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"strings"
 )
 
 var endpoint string
@@ -46,9 +47,11 @@ func Tickle() (TickleResponse, error) {
 			return response, err
 		}
 
-		err = json.Unmarshal(bodyBytes, &response)
-		if err != nil {
-			return response, err
+		if string(bodyBytes) != "" && strings.Contains(string(bodyBytes), `"error":`) == false {
+			err = json.Unmarshal(bodyBytes, &response)
+			if err != nil {
+				return response, err
+			}
 		}
 
 		return response, nil
@@ -73,9 +76,11 @@ func GetAuthStatus() (AuthStatusResponse, error) {
 			return response, err
 		}
 
-		err = json.Unmarshal(bodyBytes, &response)
-		if err != nil {
-			return response, err
+		if string(bodyBytes) != "" && strings.Contains(string(bodyBytes), `"error":`) == false {
+			err = json.Unmarshal(bodyBytes, &response)
+			if err != nil {
+				return response, err
+			}
 		}
 
 		return response, nil
@@ -100,9 +105,11 @@ func Reauthenticate() (ReauthinticateResponse, error) {
 			return response, err
 		}
 
-		err = json.Unmarshal(bodyBytes, &response)
-		if err != nil {
-			return response, err
+		if string(bodyBytes) != "" && strings.Contains(string(bodyBytes), `"error":`) == false {
+			err = json.Unmarshal(bodyBytes, &response)
+			if err != nil {
+				return response, err
+			}
 		}
 
 		return response, nil
