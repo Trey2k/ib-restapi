@@ -14,7 +14,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	err = ib.Start(errChan, 1)
+	err = ib.Start(errChan, 30)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -26,11 +26,11 @@ func main() {
 		}
 	}(errChan)
 
-	response, err := ib.Reauthenticate()
+	response, err := ib.GetAuthStatus()
 	if err != nil {
 		log.Panic(err)
 	}
-	println(response.Message)
+	println(response.Authenticated)
 
 	<-make(chan struct{})
 }
