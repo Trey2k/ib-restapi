@@ -89,3 +89,64 @@ type SearchResponse struct {
 	Sections      []struct {
 	}
 }
+
+//End Contract Structs
+
+//Start Order Structs
+
+//PlaceOrderResponses array of PlaceOrderResponse
+type PlaceOrderResponses []PlaceOrderResponse
+
+//PlaceOrderResponse response struct for /iserver/account/{accountId}/order
+type PlaceOrderResponse struct {
+	ID      string
+	Message []string
+}
+
+//PreviewOrderResponse response struct for /iserver/account/{accountId}/order/whatif
+type PreviewOrderResponse struct {
+	Amount struct {
+		Amount     string
+		Commission string
+		Total      string
+	}
+	Equity struct {
+		Current string
+		Change  string
+		After   string
+	}
+	Initial struct {
+		Current string
+		Change  string
+		After   string
+	}
+	Maintenance struct {
+		Current string
+		Change  string
+		After   string
+	}
+	Warn  string
+	Error string
+}
+
+//PlaceOrderReplyResponses array of PlaceOrderReplyResponse
+type PlaceOrderReplyResponses []PlaceOrderReplyResponse
+
+//PlaceOrderReplyResponse response struct for /iserver/reply/{replyid}
+type PlaceOrderReplyResponse struct {
+	OrderID      string
+	OrderStatus  string
+	LocalOrderID string
+}
+
+//ModifyOrderResponses array of ModifyOrderResponse
+type ModifyOrderResponses []ModifyOrderResponse
+
+//ModifyOrderResponse response struct for /iserver/account/{accountId}/order/{orderId}
+type ModifyOrderResponse struct {
+	OrderID      string `json:"order_id"`
+	LocalOrderID string `json:"local_order_id"`
+	OrderStatus  string `json:"order_status"`
+}
+
+//End Order Structs
