@@ -46,7 +46,6 @@ func Tickle() (TickleResponse, error) {
 			return response, err
 		}
 
-		// Convert response body to tickerInfor struct
 		err = json.Unmarshal(bodyBytes, &response)
 		if err != nil {
 			return response, err
@@ -62,7 +61,7 @@ func GetAuthStatus() (AuthStatusResponse, error) {
 	var response AuthStatusResponse
 	if isRunning {
 		var err error
-		resp, err := http.Get(endpoint + "/auth/status")
+		resp, err := http.Get(endpoint + "/iserver/auth/status")
 
 		if err != nil {
 			return response, err
@@ -74,7 +73,6 @@ func GetAuthStatus() (AuthStatusResponse, error) {
 			return response, err
 		}
 
-		// Convert response body to tickerInfor struct
 		err = json.Unmarshal(bodyBytes, &response)
 		if err != nil {
 			return response, err
@@ -90,7 +88,7 @@ func Reauthenticate() (ReauthinticateResponse, error) {
 	var response ReauthinticateResponse
 	if isRunning {
 		var err error
-		resp, err := http.Get(endpoint + "/auth/status")
+		resp, err := http.Get(endpoint + "/iserver/reauthenticate")
 
 		if err != nil {
 			return response, err
@@ -102,7 +100,6 @@ func Reauthenticate() (ReauthinticateResponse, error) {
 			return response, err
 		}
 
-		// Convert response body to tickerInfor struct
 		err = json.Unmarshal(bodyBytes, &response)
 		if err != nil {
 			return response, err

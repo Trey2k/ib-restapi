@@ -14,16 +14,23 @@ func main() {
 		log.Panic(err)
 	}
 
-	err = ib.Start(errChan, 30)
+	err = ib.Start(errChan, 1)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	func(errChan chan error) {
+	go func(errChan chan error) {
 		err := <-errChan
 		if err != nil {
 			log.Panic(err)
 		}
 	}(errChan)
 
+	response, err := ib.Reauthenticate()
+	if err != nil {
+		log.Panic(err)
+	}
+	println(response.Message)
+
+	<-make(chan struct{})
 }
