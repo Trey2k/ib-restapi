@@ -94,6 +94,33 @@ type SearchResponse struct {
 
 //Start Order Structs
 
+//LiveOrdersResponse response struct for /iserver/account/orders
+type LiveOrdersResponse struct {
+	Orders []struct {
+		Acct              string
+		Conid             int
+		OrderDesc         string
+		Description1      string
+		Ticker            string
+		SecType           string
+		ListingExchange   string
+		RemainingQuantity string
+		FilledQuantity    string
+		CompanyName       string
+		Status            string
+		OrigOrderType     string
+		Side              string
+		Price             int
+		BgColor           string
+		FgColor           string
+		OrderID           int
+		ParentID          int
+		OrderRef          string
+	}
+	Notifications []struct {
+	}
+}
+
 //PlaceOrderResponses array of PlaceOrderResponse
 type PlaceOrderResponses []PlaceOrderResponse
 
@@ -144,9 +171,9 @@ type ModifyOrderResponses []ModifyOrderResponse
 
 //ModifyOrderResponse response struct for /iserver/account/{accountId}/order/{orderId}
 type ModifyOrderResponse struct {
-	OrderID      string `json:"order_id"`
-	LocalOrderID string `json:"local_order_id"`
-	OrderStatus  string `json:"order_status"`
+	OrderID      string
+	LocalOrderID string
+	OrderStatus  string
 }
 
 //End Order Structs
