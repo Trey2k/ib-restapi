@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	ibrest "github.com/Trey2k/ib-restapi"
+	"github.com/Trey2k/ibrest"
 )
 
 func main() {
