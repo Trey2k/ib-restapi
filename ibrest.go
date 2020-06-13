@@ -1,27 +1,34 @@
-package ibrestapi
+package ibrest
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net"
-	"net/http"
 	"time"
 )
 
 var isRunning bool = false
 var endpoint string
 
-//Start will start the connection to the IB Client Port web API. you must pass in a error channel to test for connection loss. PingDelay is how often in secounds you want to test the connection
+//Start will start the connection to the IB Client Port web API. You must pass in a error channel to test for connection loss. PingDelay is how often in secounds you want to test the connection.
 func Start(errChan chan error, pingDelay int) error {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //Disabling SSL security check globally
 	if isEndpointSet() {
 		isRunning = true
-		go keepAlive(errChan, pingDelay)
-		return nil
+		ping, err := PingEndpoint()
+		if err != nil {
+			return err
+		}
+
+		if ping {
+			go keepAlive(errChan, pingDelay)
+			return nil
+		}
+		return ErrCantConnect
 	}
 	return ErrEndpointNotSet
 }
 
+//keepAlive is ran in a go routine in the backgroun to maintain the connection.
+//It passes all errors to the error channel passed when Start() was ran
 func keepAlive(errChan chan error, pingDelay int) {
 	for {
 		ping, err := PingEndpoint()
@@ -29,30 +36,17 @@ func keepAlive(errChan chan error, pingDelay int) {
 			errChan <- err
 		}
 
-		if !ping {
-			auth, err := IsAuthenticated()
+		if !ping { //If ping fails try to reauthenticate
+			response, err := Reauthenticate()
 			if err != nil {
 				errChan <- err
 			}
 
-			if !auth {
-				response, err := Reauthenticate()
-				if err != nil {
-					errChan <- err
-				}
-
-				if response.Message != "" {
-					auth, err = IsAuthenticated()
-					if err != nil {
-						errChan <- err
-					}
-
-					if !auth {
-						errChan <- ErrCantAuthenticate
-					}
-				}
+			if !response.Authenticated { //If we cant authenticate send a error through the error channel
+				errChan <- ErrCantAuthenticate
 			}
 		}
+
 		time.Sleep(time.Second * time.Duration(pingDelay))
 	}
 }
@@ -60,10 +54,14 @@ func keepAlive(errChan chan error, pingDelay int) {
 //Endpoint functions
 
 //SetEndpoint is used to set the IPv4 and Port of the ib cpw endpoint
-func SetEndpoint(ip string, port int64) error {
+func SetEndpoint(ip string, port int, ssl bool) error {
 	if net.ParseIP(ip) != nil {
 		if port != 0 {
-			endpoint = "https://" + ip + ":" + fmt.Sprint(port) + "/v1/portal"
+			if ssl {
+				endpoint = "https://" + ip + ":" + fmt.Sprint(port) + "/v1/portal"
+			} else {
+				endpoint = "http://" + ip + ":" + fmt.Sprint(port) + "/v1/portal"
+			}
 			return nil
 		}
 		return ErrInvalidPort
@@ -71,6 +69,7 @@ func SetEndpoint(ip string, port int64) error {
 	return ErrInvalidIP
 }
 
+//isEndpointSet test if the endpoint has been set
 func isEndpointSet() bool {
 	return endpoint != ""
 }

@@ -1,25 +1,29 @@
 package main
 
 import (
-	"fmt"
+	"crypto/tls"
 	"log"
+	"net/http"
 	"strings"
 
-	ib "github.com/Trey2k/ib-restapi"
+	ibrest "github.com/Trey2k/ib-restapi"
 )
 
 func main() {
 	var err error
 	errChan := make(chan error)
 
-	//Setting Endpoint
-	err = ib.SetEndpoint("127.0.0.1", 5000)
+	//Setting Endpoint IP, Port, SSL
+	err = ibrest.SetEndpoint("127.0.0.1", 5000, true)
 	if err != nil {
 		log.Panic(err)
 	}
 
+	//I dont have a cert setup on my cpw but am still running in SSL mod, tis line disables SSL security check globally
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+
 	//Starting connection, passing our error channel and setting the ping delay
-	err = ib.Start(errChan, 30)
+	err = ibrest.Start(errChan, 30)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -31,42 +35,21 @@ func main() {
 			log.Panic(err)
 		}
 	}(errChan)
-	payload := ib.PlaceOrderPayload{
-		AcctID:          "U4154708",
-		Conid:           305691292,
-		SecType:         "305691292:STK",
-		COID:            "AMZ order",
-		ParentID:        "",
-		OrderType:       "MKT",
-		ListingExchange: "",
-		OutsideRTH:      false,
-		Price:           100,
-		Side:            "BUY",
-		Ticker:          "AMZN",
-		Tif:             "GTC",
-		Referrer:        "QuickTrade",
-		Quantity:        87,
-		UseAdaptive:     false,
-	}
 
-	resp, err := ib.PreviewOrder(payload, "U4154708")
-
-	println(fmt.Sprint(resp))
-
-	/*printVerify("AMZN")
+	printVerify("AMZN")
 	printVerify("GO")
 	printVerify("A")
 	printVerify("HH")
-	printVerify("IBM")*/
+	printVerify("IBM")
 
 	//Holding call to keep connection alive for testing purposes. You would not normally use this
 	<-make(chan struct{})
 }
 
 //Using the contract Search to search for contracts with given ticker aka symbol
-func verifyTicker(ticker string) (bool, ib.SearchResponse) {
+func verifyTicker(ticker string) (bool, ibrest.SearchResponse) {
 	//Creating payload for the search function
-	payload := ib.SearchPayload{
+	payload := ibrest.SearchPayload{
 		Symbol:  ticker,
 		Name:    false,
 		SecType: "",
@@ -74,13 +57,13 @@ func verifyTicker(ticker string) (bool, ib.SearchResponse) {
 	real := false
 
 	//Running the search function and passing it the SearchPayload we created above
-	responses, err := ib.Search(payload) //Search returns type of ib.SearchResponses which is just a array of the type ib.SearchResponse this will be true for any type that returns an array
+	responses, err := ibrest.Search(payload) //Search returns type of ib.SearchResponses which is just a array of the type ib.SearchResponse this will be true for any type that returns an array
 	if err != nil {
 		log.Panic(err)
 	}
 
 	//Finding which if any have a exact match
-	var response ib.SearchResponse
+	var response ibrest.SearchResponse
 	for i := 0; i < len(responses); i++ {
 		if strings.ToUpper(responses[i].Symbol) == strings.ToUpper(ticker) {
 			response = responses[i]

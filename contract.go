@@ -1,4 +1,4 @@
-package ibrestapi
+package ibrest
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package ibrestapi
+package ibrest
 
 //Tickle tickles the endpoint to keep the session alive
 func Tickle() (TickleResponse, error) {

@@ -1,4 +1,4 @@
-package ibrestapi
+package ibrest
 
 //SearchPayload the payload struct for Search
 type SearchPayload struct {

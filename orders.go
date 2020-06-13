@@ -1,4 +1,4 @@
-package ibrestapi
+package ibrest
 
 //LiveOrders get a list of the current live orders
 func LiveOrders() (LiveOrdersResponse, error) {
